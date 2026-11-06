@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PyScanner – Svět podle Sammy</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <script src="../../assets/js/script.js" defer></script>
+</head>
+<body class="project-detail">
+  <button type="button" class="theme-toggle" onclick="myFunction()">Světlý režim</button>
+  <button class="site-nav-toggle" type="button" aria-label="Otevřít navigaci" aria-controls="site-nav" aria-expanded="false"><span class="site-nav-icon" aria-hidden="true"></span></button>
+  <dialog class="site-nav-drawer" id="site-nav" aria-label="Hlavní navigace">
+    <div class="site-nav-heading">
+      <span>Navigace</span>
+      <button class="site-nav-close" type="button" aria-label="Zavřít navigaci">×</button>
+    </div>
+  <nav class="site-nav" aria-label="Hlavní navigace">
+    <ul>
+      <li><a href="../../index.html">Úvod</a></li>
+      <li><a href="../clanky.html">Články</a></li>
+      <li><a href="../kontakt.html">Kontakt</a></li>
+      <li><a href="../o-mne.html">O mně</a></li>
+      <li><a href="../projekty.html">Projekty</a></li>
+      <li><a href="../fotky.html">Fotky</a></li>
+      <li><a href="../knihovna.html">Knihovna</a></li>
+    </ul>
+  </nav>
+  </dialog>
+  <header>
+    <p class="project-kicker">Python · síťová diagnostika · příkazová řádka</p>
+    <h1>PyScanner</h1>
+    <blockquote>
+      <p>Nástroj pro průzkum zařízení a dostupných služeb v místní síti. Identifikace operačního systému i výrobce podle MAC adresy je orientační a nemusí být přesná.</p>
+    </blockquote>
+    <p class="project-slug"><code>PyScanner · Python 3 · Linux</code></p>
+  </header>
+
+  <main class="article-page">
+    <section class="project-intro">
+      <dl class="project-meta">
+        <div><dt>Jazyk</dt><dd>Python 3</dd></div>
+        <div><dt>Platforma</dt><dd>Linux</dd></div>
+        <div><dt>Rozhraní</dt><dd>Terminál (CLI)</dd></div>
+      </dl>
+      <p>Projekt slouží k demonstraci základních principů síťového skenování, které využívají nástroje, jako je Nmap. PyScanner je určen pro orientační kontrolu místní sítě a nepředstavuje jeho náhradu.</p>
+    </section>
+
+    <section class="project-section">
+      <h2>Co skener zjišťuje</h2>
+      <ul>
+        <li>Najde místní síť a projde její adresy</li>
+        <li>Zkusí připojení k TCP portům a vypíše dostupné služby</li>
+        <li>Pokusí se přečíst banner služby</li>
+        <li>Odhadne systém podle TTL odpovědi na ping</li>
+        <li>Doplní hostname a dostupnou MAC adresu; výrobce hledá přes online API</li>
+        <li>Vypíše průběh skenování a rozliší otevřené a filtrované porty</li>
+        <li>Skenování lze přerušit pomocí Ctrl+C</li>
+      </ul>
+    </section>
+
+    <section class="project-section">
+      <h2>Požadavky</h2>
+      <ul>
+        <li>Python 3.x</li>
+        <li>Linux (používá <code>/proc/net/arp</code> pro získání MAC adresy)</li>
+        <li>Připojení k internetu (vyhledání výrobce přes <code>api.macvendors.com</code>)</li>
+      </ul>
+    </section>
+
+    <section class="project-section">
+      <h2>Stažení</h2>
+      <p>Zdrojový kód je dostupný <a href="https://github.com/SagiHacky/PyScanner/blob/main/PyScanner.py">na GitHubu</a> a lze jej stáhnout příkazem:</p>
+      <pre><code class="language-bash">curl -L https://raw.githubusercontent.com/SagiHacky/PyScanner/main/PyScanner.py -o PyScanner.py
+      </code></pre>
+    </section>
+
+    <section class="project-section">
+      <h2>Použití</h2>
+      <pre><code class="language-bash">python3 PyScanner.py
+      </code></pre>
+      <p>Další argumenty nejsou vyžadovány. Skript se pokusí automaticky zjistit rozsah místní sítě a zahájí skenování.</p>
+    </section>
+
+    <section class="project-section">
+      <h2>Příklad výstupu</h2>
+      <pre><code>___  _   _ ____ ____ ____ _  _ _  _ ____ ____
+|__]  \_/  [__  |    |__| |\ | |\ | |___ |__/
+|      |   ___] |___ |  | | \| | \| |___ |  \
+
+Skenování začalo...
+
+192.168.1.1 - _gateway - Linux/Mac - aa:bb:cc:dd:ee:ff - XEROX CORPORATION
+  53 - domain - bez banneru
+  80 - http - bez banneru
+  443 - https - bez banneru
+
+192.168.1.105 - myphone - Linux/Mac - ff:ee:dd:cc:bb:aa - Apple, Inc.
+  146 portů filtrovaných
+
+192.168.1.202 - unknown - Network Device - 18:69:d8:xx:xx:xx - Tuya Smart Inc.
+  42 portů filtrovaných
+
+[██████████████████████████████████████████████████] 100%
+Skenování skončilo...
+
+6 hostů bylo vypnuto
+Sken trval 62 sekund
+      </code></pre>
+    </section>
+
+    <section class="project-section">
+      <h2>Co skript dělá</h2>
+      <ol>
+        <li>Pomocí <code>socket</code> zjistí lokální IP adresu a odvodí rozsah <code>/24</code></li>
+        <li>Projde adresy v rozsahu a z pingové odpovědi získá TTL</li>
+        <li>MAC adresy čte z <code>/proc/net/arp</code>; výrobce dohledává přes <code>api.macvendors.com</code></li>
+        <li>Porty zkouší přes TCP sockety; u otevřených se pokusí přečíst bannery</li>
+        <li>Výsledky vypíše po jednotlivých zařízeních</li>
+      </ol>
+    </section>
+
+    <section class="project-section">
+      <h2>Omezení</h2>
+      <ul>
+        <li>Odhad operačního systému podle TTL není spolehlivá identifikace</li>
+        <li>Vyhledání výrobce závisí na dostupnosti bezplatného API</li>
+        <li>Pouze Linux</li>
+        <li>MAC adresa vašeho vlastního zařízení se může zobrazit jako <code>unknown</code></li>
+      </ul>
+    </section>
+
+    <p><a href="../projekty.html">← Zpět na projekty</a></p>
+  </main>
+</body>
+</html>
